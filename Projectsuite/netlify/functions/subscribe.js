@@ -78,11 +78,11 @@ export const handler = async (event, context) => {
         // 2. Send Welcome Email
         const mailOptions = {
             from: {
-                name: 'ProjectsSuite',
+                name: 'Projectssuite',
                 address: process.env.GMAIL_USER,
             },
             to: email,
-            subject: 'Welcome to ProjectsSuite! 🚀',
+            subject: 'Welcome to Projectssuite! 🚀',
             html: `
               <!DOCTYPE html>
               <html>
@@ -98,11 +98,11 @@ export const handler = async (event, context) => {
               </head>
               <body>
                 <div class="header">
-                  <h1 style="margin: 0;">Welcome to ProjectsSuite! 🚀</h1>
+                  <h1 style="margin: 0;">Welcome to Projectssuite! 🚀</h1>
                 </div>
                 <div class="content">
                   <p>Hi there!</p>
-                  <p>Thank you for subscribing to the <strong>ProjectsSuite Newsletter</strong>! Your #1 destination for Major & Minor Student Projects.</p>
+                  <p>Thank you for subscribing to the <strong>Projectssuite Newsletter</strong>! Your #1 destination for Major & Minor Student Projects.</p>
                   
                   <p>Here's what you can expect from us:</p>
                   
@@ -113,11 +113,11 @@ export const handler = async (event, context) => {
                   
                   <p style="margin-top: 30px;">Stay tuned for amazing content and updates!</p>
                   
-                  <p>Best regards,<br><strong>The ProjectsSuite Team</strong></p>
+                  <p>Best regards,<br><strong>The Projectssuite Team</strong></p>
                 </div>
                 
                 <div class="footer">
-                  <p>© ${new Date().getFullYear()} ProjectsSuite. All rights reserved.</p>
+                  <p>© ${new Date().getFullYear()} Projectssuite. All rights reserved.</p>
                   <p>You're receiving this email because you subscribed to our newsletter.</p>
                 </div>
               </body>
