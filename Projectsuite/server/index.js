@@ -164,6 +164,39 @@ app.post('/api/notify-project', async (req, res) => {
     }
 });
 
+// Handle contact form submission
+app.post('/api/contact', async (req, res) => {
+    const { name, email, whatsappNumber, isWhatsappAvailable, serviceType, message } = req.body;
+
+    console.log(`📩 Received contact form from: ${name} (${email})`);
+
+    try {
+        const { sendContactFormEmail } = require('./emailService');
+
+        const result = await sendContactFormEmail({
+            name,
+            email,
+            whatsappNumber,
+            isWhatsappAvailable,
+            serviceType,
+            message
+        });
+
+        if (result.success) {
+            res.json({ success: true, message: 'Message sent successfully' });
+        } else {
+            throw result.error || new Error('Failed to send email');
+        }
+
+    } catch (error) {
+        console.error('❌ Contact form error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to send message. Please try again later.'
+        });
+    }
+});
+
 // Get subscriber count (admin only - requires auth)
 app.get('/api/subscribers/count', async (req, res) => {
     try {
