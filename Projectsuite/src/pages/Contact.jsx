@@ -7,6 +7,8 @@ const Contact = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        whatsappNumber: '',
+        isWhatsappAvailable: false,
         serviceType: 'Business Website',
         message: ''
     });
@@ -25,7 +27,7 @@ const Contact = () => {
             console.log('Form Submitted:', formData);
             setIsSubmitting(false);
             setSubmitted(true);
-            setFormData({ name: '', email: '', serviceType: 'Business Website', message: '' });
+            setFormData({ name: '', email: '', whatsappNumber: '', isWhatsappAvailable: false, serviceType: 'Business Website', message: '' });
         }, 1500);
     };
 
@@ -76,7 +78,7 @@ const Contact = () => {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-gray-900 font-heading text-lg">Email Us</h4>
-                                        <p className="text-gray-600 font-body">contact@projectssuite.com</p>
+                                        <p className="text-gray-600 font-body">projectssuitestaff@gmail.com</p>
                                         <p className="text-sm text-gray-400 mt-1 font-body">We typically reply within 24 hours.</p>
                                     </div>
                                 </div>
@@ -111,7 +113,7 @@ const Contact = () => {
                                 <p className="text-blue-50 mb-8 font-body text-lg leading-relaxed">
                                     Get a free consultation for your project or business website today. We're excited to work with you!
                                 </p>
-                                <a href="mailto:contact@projectssuite.com" className="inline-block px-6 py-3 bg-white text-blue-600 rounded-xl font-bold font-heading hover:bg-blue-50 transition-colors shadow-lg">
+                                <a href="mailto:projectssuitestaff@gmail.com" className="inline-block px-6 py-3 bg-white text-blue-600 rounded-xl font-bold font-heading hover:bg-blue-50 transition-colors shadow-lg">
                                     Book a Call
                                 </a>
                             </div>
@@ -171,6 +173,32 @@ const Contact = () => {
                                         className="w-full px-5 py-3 rounded-xl border border-gray-200 bg-white/70 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all font-body text-gray-900 placeholder-gray-400"
                                         placeholder="john@example.com"
                                     />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="whatsappNumber" className="block text-sm font-bold text-gray-700 mb-2 font-heading">WhatsApp Number</label>
+                                    <input
+                                        type="tel"
+                                        id="whatsappNumber"
+                                        name="whatsappNumber"
+                                        value={formData.whatsappNumber}
+                                        onChange={handleChange}
+                                        className="w-full px-5 py-3 rounded-xl border border-gray-200 bg-white/70 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all font-body text-gray-900 placeholder-gray-400"
+                                        placeholder="+91 98765 43210"
+                                    />
+                                    <div className="mt-2 flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            id="isWhatsappAvailable"
+                                            name="isWhatsappAvailable"
+                                            checked={formData.isWhatsappAvailable}
+                                            onChange={(e) => setFormData({ ...formData, isWhatsappAvailable: e.target.checked })}
+                                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                        />
+                                        <label htmlFor="isWhatsappAvailable" className="ml-2 text-sm text-gray-600 font-body">
+                                            Is this number available on WhatsApp?
+                                        </label>
+                                    </div>
                                 </div>
 
                                 <div>
