@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, Github, Check } from 'lucide-react';
-import { projects as staticProjects } from '../data/projects';
+
 import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 import { supabase } from '../lib/supabase';
@@ -43,11 +43,7 @@ const ProjectDetail = () => {
                 console.error("Error fetching from Supabase:", error);
             }
 
-            // 2. Fallback to static projects - convert both IDs to strings for comparison
-            const staticProject = staticProjects.find(p => String(p.id) === String(id));
-            if (staticProject) {
-                setProject(staticProject);
-            }
+
 
             setLoading(false);
         };
