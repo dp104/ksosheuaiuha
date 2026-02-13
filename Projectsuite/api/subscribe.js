@@ -5,8 +5,19 @@ import crypto from 'crypto';
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseKey || 'placeholder');
 
+// Validate environment variables
+const missingVars = [
+    'SUPABASE_URL',
+    'SUPABASE_ANON_KEY',
+    'GMAIL_USER',
+    'GMAIL_APP_PASSWORD'
+].filter(key => !process.env[key]);
+
+if (missingVars.length > 0) {
+    console.error(`❌ Missing environment variables: ${missingVars.join(', ')}`);
+}
 
 // Initialize Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -34,6 +45,13 @@ export default async function handler(req, res) {
 
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    if (missingVars.length > 0) {
+        return res.status(500).json({
+            success: false,
+            message: `Server Error: Missing environment variables: ${missingVars.join(', ')}. Please add them in Vercel Settings.`
+        });
     }
 
     const { email } = req.body;
