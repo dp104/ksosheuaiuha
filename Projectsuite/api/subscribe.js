@@ -5,6 +5,7 @@ import crypto from 'crypto';
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
+// Use placeholder if missing to prevent top-level crash, but validate later
 const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseKey || 'placeholder');
 
 // Validate environment variables
@@ -19,108 +20,107 @@ if (missingVars.length > 0) {
     console.error(`❌ Missing environment variables: ${missingVars.join(', ')}`);
 }
 
-// Initialize Nodemailer transporter
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD
-    }
-});
-
 export default async function handler(req, res) {
-    // Enable CORS manually if needed, or rely on Vercel's same-origin
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    );
-
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
-
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    if (missingVars.length > 0) {
-        return res.status(500).json({
-            success: false,
-            message: `Server Error: Missing environment variables: ${missingVars.join(', ')}. Please add them in Vercel Settings.`
-        });
-    }
-
-    const { email } = req.body;
-
-    // Validate email
-    if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-        return res.status(400).json({
-            success: false,
-            message: 'Please provide a valid email address'
-        });
-    }
-
     try {
-        // Get client info (Vercel provides these headers)
-        const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        const userAgent = req.headers['user-agent'];
+        // Enable CORS manually if needed, or rely on Vercel's same-origin
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+        res.setHeader(
+            'Access-Control-Allow-Headers',
+            'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+        );
 
-        console.log('💾 Attempting to insert into database:', email);
+        if (req.method === 'OPTIONS') {
+            res.status(200).end();
+            return;
+        }
 
-        // Insert into database
-        const { data, error } = await supabase
-            .from('newsletter_subscribers')
-            .insert([
-                {
-                    id: crypto.randomUUID(),
-                    email: email.toLowerCase().trim(),
-                    ip_address: ipAddress,
-                    user_agent: userAgent
-                }
-            ])
-            .select();
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
 
-        if (error) {
-            // Check for duplicate email
-            if (error.code === '23505') {
-                console.log('⚠️ Duplicate email:', email);
-                return res.status(409).json({
-                    success: false,
-                    message: 'This email is already subscribed to our newsletter!'
-                });
-            }
-
-            console.error('❌ Database error:', JSON.stringify(error, null, 2));
+        if (missingVars.length > 0) {
             return res.status(500).json({
                 success: false,
-                message: 'Failed to subscribe. Please try again later.'
+                message: `Server Error: Missing environment variables: ${missingVars.join(', ')}. Please add them in Vercel Settings.`
             });
         }
 
-        // Send welcome email
-        try {
-            await sendWelcomeEmail(email);
-            console.log(`✅ Subscription successful for: ${email}`);
-        } catch (emailError) {
-            console.error('Email sending failed:', emailError);
-            // Don't fail the request if email fails - subscription is still saved
+        const { email } = req.body;
+
+        // Validate email
+        if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide a valid email address'
+            });
         }
 
-        return res.status(201).json({
-            success: true,
-            message: 'Successfully subscribed! Check your email for confirmation.',
-            data: data ? data[0] : null
-        });
+        try {
+            // Get client info (Vercel provides these headers)
+            const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            const userAgent = req.headers['user-agent'];
 
-    } catch (error) {
-        console.error('Subscription error:', error);
+            console.log('💾 Attempting to insert into database:', email);
+
+            // Insert into database
+            const { data, error } = await supabase
+                .from('newsletter_subscribers')
+                .insert([
+                    {
+                        id: crypto.randomUUID(),
+                        email: email.toLowerCase().trim(),
+                        ip_address: ipAddress,
+                        user_agent: userAgent
+                    }
+                ])
+                .select();
+
+            if (error) {
+                // Check for duplicate email
+                if (error.code === '23505') {
+                    console.log('⚠️ Duplicate email:', email);
+                    return res.status(409).json({
+                        success: false,
+                        message: 'This email is already subscribed to our newsletter!'
+                    });
+                }
+
+                console.error('❌ Database error:', JSON.stringify(error, null, 2));
+                return res.status(500).json({
+                    success: false,
+                    message: 'Failed to subscribe. Please try again later.'
+                });
+            }
+
+            // Send welcome email
+            try {
+                await sendWelcomeEmail(email);
+                console.log(`✅ Subscription successful for: ${email}`);
+            } catch (emailError) {
+                console.error('Email sending failed:', emailError);
+                // Don't fail the request if email fails - subscription is still saved
+            }
+
+            return res.status(201).json({
+                success: true,
+                message: 'Successfully subscribed! Check your email for confirmation.',
+                data: data ? data[0] : null
+            });
+
+        } catch (error) {
+            console.error('Subscription error:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'An unexpected error occurred. Please try again.'
+            });
+        }
+    } catch (criticalError) {
+        console.error('Critical Server Error:', criticalError);
         return res.status(500).json({
             success: false,
-            message: 'An unexpected error occurred. Please try again.'
+            message: `Critical Server Error: ${criticalError.message}`
         });
     }
 }
@@ -166,6 +166,14 @@ async function sendWelcomeEmail(email) {
       </html>
     `
     };
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_APP_PASSWORD
+        }
+    });
 
     return transporter.sendMail(mailOptions);
 }
