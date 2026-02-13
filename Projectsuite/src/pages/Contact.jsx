@@ -33,7 +33,7 @@ const Contact = () => {
         <div className="min-h-screen pt-24 pb-20 relative overflow-hidden">
             <SEO
                 title="Contact Us"
-                description="Get in touch with ProjectSuite for your web development needs or project inquiries."
+                description="Get in touch with Projectssuite for your web development needs or project inquiries."
             />
 
             {/* Background blobs */}
@@ -76,7 +76,7 @@ const Contact = () => {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-gray-900 font-heading text-lg">Email Us</h4>
-                                        <p className="text-gray-600 font-body">contact@projectsuite.com</p>
+                                        <p className="text-gray-600 font-body">contact@projectssuite.com</p>
                                         <p className="text-sm text-gray-400 mt-1 font-body">We typically reply within 24 hours.</p>
                                     </div>
                                 </div>
@@ -111,7 +111,7 @@ const Contact = () => {
                                 <p className="text-blue-50 mb-8 font-body text-lg leading-relaxed">
                                     Get a free consultation for your project or business website today. We're excited to work with you!
                                 </p>
-                                <a href="mailto:contact@projectsuite.com" className="inline-block px-6 py-3 bg-white text-blue-600 rounded-xl font-bold font-heading hover:bg-blue-50 transition-colors shadow-lg">
+                                <a href="mailto:contact@projectssuite.com" className="inline-block px-6 py-3 bg-white text-blue-600 rounded-xl font-bold font-heading hover:bg-blue-50 transition-colors shadow-lg">
                                     Book a Call
                                 </a>
                             </div>
