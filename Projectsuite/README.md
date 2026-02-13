@@ -1,4 +1,4 @@
-# ProjectSuite
+# Projectssuite
 
 A modern, full-stack portfolio management platform built with React and Supabase. Showcase projects dynamically with a beautiful UI and manage content through a powerful admin panel.
 
