@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, Plus, Trash2, FolderOpen, Edit, X, Key } from 'lucide-react';
@@ -14,6 +14,7 @@ const AdminDashboard = () => {
     const [demoLink, setDemoLink] = useState('');
     const [demoAvailable, setDemoAvailable] = useState(true);
     const [codeLink, setCodeLink] = useState('');
+    const [notifySubscribers, setNotifySubscribers] = useState(false);
     const [image, setImage] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
     const [loading, setLoading] = useState(false);
@@ -21,6 +22,7 @@ const AdminDashboard = () => {
     const [projects, setProjects] = useState([]);
     const [loadingProjects, setLoadingProjects] = useState(true);
     const [editingProject, setEditingProject] = useState(null);
+    const fileInputRef = useRef(null);
     const navigate = useNavigate();
 
     const fetchProjects = async () => {
@@ -144,6 +146,43 @@ const AdminDashboard = () => {
             setImage(null);
             setImageUrl('');
             setCustomCategory('');
+
+            // Reset file input manually
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+
+            // Send notifications if requested
+            if (notifySubscribers) {
+                try {
+                    console.log('Publishing notification for:', title);
+                    fetch('http://localhost:3001/api/notify-project', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title,
+                            description,
+                            image: finalImageUrl,
+                            category: finalCategory,
+                            link: demoAvailable ? demoLink : 'https://projects-suite.netlify.app'
+                        })
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log('Notification result:', data);
+                            if (data.success) {
+                                alert(`Project added AND ${data.message} (${data.stats.sent} emails sent)`);
+                            }
+                        })
+                        .catch(e => console.error('Notification failed:', e));
+                } catch (notifyError) {
+                    console.error('Failed to trigger notifications:', notifyError);
+                }
+            } else {
+                alert('Project added successfully!');
+            }
+
+            setNotifySubscribers(false);
 
             // Refresh projects list
             fetchProjects();
@@ -525,10 +564,29 @@ const AdminDashboard = () => {
                                 <div className="text-center text-xs text-gray-500">OR</div>
                                 <input
                                     type="file"
+                                    ref={fileInputRef}
                                     onChange={handleImageChange}
                                     accept="image/*"
                                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                 />
+                            </div>
+                        </div>
+
+                        <div className="bg-purple-50 border border-purple-100 rounded-xl p-4 flex items-center gap-3">
+                            <input
+                                type="checkbox"
+                                id="notifySubscribers"
+                                checked={notifySubscribers}
+                                onChange={(e) => setNotifySubscribers(e.target.checked)}
+                                className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                            />
+                            <div className="flex-1">
+                                <label htmlFor="notifySubscribers" className="block text-sm font-semibold text-gray-900 cursor-pointer">
+                                    Notify Subscribers
+                                </label>
+                                <p className="text-xs text-gray-500">
+                                    Send an email blast to all newsletter subscribers about this new project.
+                                </p>
                             </div>
                         </div>
 
