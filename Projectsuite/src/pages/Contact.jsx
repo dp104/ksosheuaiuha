@@ -19,16 +19,33 @@ const Contact = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        setTimeout(() => {
-            console.log('Form Submitted:', formData);
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setSubmitted(true);
+                setFormData({ name: '', email: '', whatsappNumber: '', isWhatsappAvailable: false, serviceType: 'Business Website', message: '' });
+            } else {
+                alert(data.message || 'Failed to send message. Please try again.');
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert('An error occurred. Please try again later.');
+        } finally {
             setIsSubmitting(false);
-            setSubmitted(true);
-            setFormData({ name: '', email: '', whatsappNumber: '', isWhatsappAvailable: false, serviceType: 'Business Website', message: '' });
-        }, 1500);
+        }
     };
 
     return (
