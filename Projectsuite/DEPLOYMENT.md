@@ -1,4 +1,4 @@
-# Deployment Guide for ProjectSuite
+# Deployment Guide for Projectssuite
 
 This guide explains how to deploy your **ProjectSuite** application to Vercel for free.
 
