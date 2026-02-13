@@ -336,4 +336,98 @@ View Project: ${link || 'https://projects-suite.netlify.app'}
   }
 }
 
-module.exports = { sendWelcomeEmail, sendNewProjectEmail };
+/**
+ * Send contact form email to admin
+ * @param {object} data - Form data { name, email, whatsappNumber, isWhatsappAvailable, serviceType, message }
+ * @returns {Promise} - Email send result
+ */
+async function sendContactFormEmail(data) {
+  const { name, email, whatsappNumber, isWhatsappAvailable, serviceType, message } = data;
+
+  const mailOptions = {
+    from: {
+      name: 'Projectssuite Contact Form',
+      address: process.env.GMAIL_USER
+    },
+    to: 'projectssuitestaff@gmail.com', // Send to staff email
+    replyTo: email, // Allow replying directly to the user
+    subject: `New Inquiry from ${name}: ${serviceType}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }
+          .header { background-color: #f3f4f6; padding: 15px; border-radius: 8px 8px 0 0; border-bottom: 1px solid #e5e7eb; }
+          .content { padding: 20px; }
+          .field { margin-bottom: 15px; }
+          .label { font-weight: bold; color: #4b5563; font-size: 14px; }
+          .value { margin-top: 5px; font-size: 16px; }
+          .whatsapp-badge { display: inline-block; background-color: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h2 style="margin: 0; color: #111827;">New Contact Inquiry</h2>
+            <p style="margin: 5px 0 0; color: #6b7280; font-size: 14px;">Received via Projectssuite Website</p>
+          </div>
+          <div class="content">
+            <div class="field">
+              <div class="label">Name:</div>
+              <div class="value">${name}</div>
+            </div>
+            
+            <div class="field">
+              <div class="label">Email:</div>
+              <div class="value"><a href="mailto:${email}">${email}</a></div>
+            </div>
+
+            <div class="field">
+              <div class="label">WhatsApp Number:</div>
+              <div class="value">
+                ${whatsappNumber || 'Not provided'}
+                ${isWhatsappAvailable ? '<span class="whatsapp-badge">Available on WhatsApp</span>' : ''}
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="label">Interested In:</div>
+              <div class="value" style="color: #2563eb; font-weight: 600;">${serviceType}</div>
+            </div>
+
+            <div class="field" style="margin-top: 25px; background-color: #f9fafb; padding: 15px; border-radius: 6px;">
+              <div class="label">Message:</div>
+              <div class="value" style="white-space: pre-wrap;">${message}</div>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+    text: `
+New Inquiry from ${name}
+
+Service: ${serviceType}
+
+Name: ${name}
+Email: ${email}
+WhatsApp: ${whatsappNumber || 'N/A'} ${isWhatsappAvailable ? '(Available)' : ''}
+
+Message:
+${message}
+    `
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✅ Contact email sent from ${email}`);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error(`❌ Error sending contact email from ${email}:`, error);
+    return { success: false, error };
+  }
+}
+
+module.exports = { sendWelcomeEmail, sendNewProjectEmail, sendContactFormEmail };
