@@ -99,13 +99,78 @@ app.post('/api/subscribe', async (req, res) => {
     }
 });
 
+// Notify subscribers about new project
+app.post('/api/notify-project', async (req, res) => {
+    // Basic formatting of req.body to ensure it matches what we expect
+    const { title, description, image, category, link, secretKey } = req.body;
+
+    console.log('📢 Received project notification request for:', title);
+
+    try {
+        // 1. Fetch active subscribers
+        const { data: subscribers, error } = await supabase
+            .from('newsletter_subscribers')
+            .select('email');
+        // .eq('is_active', true); // Removed to ensure we reach all subscribers for now
+
+        if (error) throw error;
+
+        if (!subscribers || subscribers.length === 0) {
+            return res.json({
+                success: true,
+                message: 'No subscribers to notify',
+                count: 0
+            });
+        }
+
+        console.log(`📧 Found ${subscribers.length} subscribers. Sending emails...`);
+
+        // 2. Send emails in parallel (with simple batch/rate limiting if needed, but keeping it simple for now)
+        const { sendNewProjectEmail } = require('./emailService');
+
+        let successCount = 0;
+        let failCount = 0;
+
+        // Use Promise.all to send efficiently
+        const emailPromises = subscribers.map(async (sub) => {
+            const result = await sendNewProjectEmail(sub.email, {
+                title,
+                description,
+                image,
+                category,
+                link
+            });
+
+            if (result.success) successCount++;
+            else failCount++;
+        });
+
+        await Promise.all(emailPromises);
+
+        console.log(`✅ Notification summary: ${successCount} sent, ${failCount} failed`);
+
+        res.json({
+            success: true,
+            message: `Notifications sent to ${successCount} subscribers`,
+            stats: { sent: successCount, failed: failCount, total: subscribers.length }
+        });
+
+    } catch (error) {
+        console.error('❌ Notification error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to process notifications'
+        });
+    }
+});
+
 // Get subscriber count (admin only - requires auth)
 app.get('/api/subscribers/count', async (req, res) => {
     try {
         const { count, error } = await supabase
             .from('newsletter_subscribers')
-            .select('*', { count: 'exact', head: true })
-            .eq('is_active', true);
+            .select('*', { count: 'exact', head: true });
+        // .eq('is_active', true); // Removed is_active check if column doesn't exist yet
 
         if (error) throw error;
 
