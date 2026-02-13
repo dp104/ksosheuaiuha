@@ -41,9 +41,9 @@ const Navbar = () => {
                 <div className="flex justify-between items-center">
                     {/* Logo */}
                     <Link to="/" className="flex items-center space-x-3 group">
-                        <img src={logo} alt="ProjectSuite" className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-110 drop-shadow-md" />
+                        <img src={logo} alt="Projectssuite" className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-110 drop-shadow-md" />
                         <span className="text-2xl font-bold font-heading text-gray-900 group-hover:text-blue-600 transition-colors">
-                            Project<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Suite</span>
+                            Projects<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">suite</span>
                         </span>
                     </Link>
 
