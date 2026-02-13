@@ -214,6 +214,23 @@ app.get('/api/subscribers/count', async (req, res) => {
     }
 });
 
+// Get all subscribers (admin only - requires auth)
+app.get('/api/subscribers', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('newsletter_subscribers')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        res.json({ success: true, subscribers: data });
+    } catch (error) {
+        console.error('Error fetching subscribers:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch subscribers' });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`🚀 Newsletter backend running on http://localhost:${PORT}`);
