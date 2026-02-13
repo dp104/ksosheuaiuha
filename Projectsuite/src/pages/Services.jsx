@@ -137,7 +137,7 @@ const Services = () => {
             {/* Features Grid */}
             <div className="container-custom py-20">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold font-heading text-gray-900 mb-4">Why Choose ProjectSuite?</h2>
+                    <h2 className="text-4xl font-bold font-heading text-gray-900 mb-4">Why Choose Projectssuite?</h2>
                     <p className="text-gray-600 max-w-2xl mx-auto font-body text-lg">
                         We don't just build websites; we build digital assets that help your business grow without breaking the bank.
                     </p>
