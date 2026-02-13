@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate, Link } from 'react-router-dom';
-import { projectCategories } from '../data/projects';
 import { LogOut, Plus, Trash2, FolderOpen, Edit, X, Key } from 'lucide-react';
+
+const projectCategories = ['All', 'Web App', 'Mobile App', 'UI/UX', 'API'];
 
 const AdminDashboard = () => {
     const [title, setTitle] = useState('');
