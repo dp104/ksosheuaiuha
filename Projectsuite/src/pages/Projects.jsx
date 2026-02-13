@@ -4,6 +4,7 @@ import ProjectCard from '../components/ProjectCard';
 import { Search } from 'lucide-react';
 import SEO from '../components/SEO';
 import { supabase } from '../lib/supabase';
+import Loader from '../components/Loader';
 
 const Projects = () => {
     const [activeCategory, setActiveCategory] = useState('All');
@@ -118,26 +119,32 @@ const Projects = () => {
                 </motion.div>
 
                 {/* Projects Grid */}
-                <motion.div
-                    layout
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                >
-                    <AnimatePresence mode="popLayout">
-                        {filteredProjects.map((project) => (
-                            <ProjectCard key={project.id} project={project} />
-                        ))}
-                    </AnimatePresence>
-                </motion.div>
+                {loading ? (
+                    <Loader />
+                ) : (
+                    <>
+                        <motion.div
+                            layout
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        >
+                            <AnimatePresence mode="popLayout">
+                                {filteredProjects.map((project) => (
+                                    <ProjectCard key={project.id} project={project} />
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
 
-                {filteredProjects.length === 0 && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-center py-20 glass-card rounded-3xl"
-                    >
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3 font-heading">No projects found</h3>
-                        <p className="text-gray-500 font-body">Try adjusting your search or filter to find what you're looking for.</p>
-                    </motion.div>
+                        {filteredProjects.length === 0 && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="text-center py-20 glass-card rounded-3xl"
+                            >
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3 font-heading">No projects found</h3>
+                                <p className="text-gray-500 font-body">Try adjusting your search or filter to find what you're looking for.</p>
+                            </motion.div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
