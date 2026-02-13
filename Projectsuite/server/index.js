@@ -15,7 +15,7 @@ app.use(express.json());
 // Initialize Supabase client
 const supabase = createClient(
     process.env.SUPABASE_URL,
-    process.env.SUPABASE_ANON_KEY
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY
 );
 
 // Health check endpoint
@@ -220,7 +220,7 @@ app.get('/api/subscribers', async (req, res) => {
         const { data, error } = await supabase
             .from('newsletter_subscribers')
             .select('*')
-            .order('created_at', { ascending: false });
+            .order('subscribed_at', { ascending: false });
 
         if (error) throw error;
 
