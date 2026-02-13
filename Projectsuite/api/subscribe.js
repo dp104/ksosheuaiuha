@@ -128,11 +128,11 @@ export default async function handler(req, res) {
 async function sendWelcomeEmail(email) {
     const mailOptions = {
         from: {
-            name: 'ProjectsSuite',
+            name: 'Projectssuite',
             address: process.env.GMAIL_USER
         },
         to: email,
-        subject: 'Welcome to ProjectsSuite! 🚀',
+        subject: 'Welcome to Projectssuite! 🚀',
         html: `
       <!DOCTYPE html>
       <html>
@@ -147,19 +147,19 @@ async function sendWelcomeEmail(email) {
         </style>
       </head>
       <body>
-        <div class="header"><h1 style="margin: 0;">Welcome to ProjectsSuite! 🚀</h1></div>
+        <div class="header"><h1 style="margin: 0;">Welcome to Projectssuite! 🚀</h1></div>
         <div class="content">
           <p>Hi there!</p>
-          <p>Thank you for subscribing to the <strong>ProjectsSuite Newsletter</strong>! Your #1 destination for Major & Minor Student Projects.</p>
+          <p>Thank you for subscribing to the <strong>Projectssuite Newsletter</strong>! Your #1 destination for Major & Minor Student Projects.</p>
           <div class="feature"><span class="emoji">🎓</span> <strong>Student Projects</strong> - Complete source codes & documentation</div>
           <div class="feature"><span class="emoji">💻</span> <strong>Web Development</strong> - Custom website building services</div>
           <div class="feature"><span class="emoji">🛠️</span> <strong>Software Solutions</strong> - Custom software for your specific needs</div>
           <div class="feature"><span class="emoji">🎁</span> <strong>Exclusive Offers</strong> - Get special discounts for students</div>
           <p style="margin-top: 30px;">Stay tuned for amazing content and updates!</p>
-          <p>Best regards,<br><strong>The ProjectsSuite Team</strong></p>
+          <p>Best regards,<br><strong>The Projectssuite Team</strong></p>
         </div>
         <div class="footer">
-          <p>© ${new Date().getFullYear()} ProjectsSuite. All rights reserved.</p>
+          <p>© ${new Date().getFullYear()} Projectssuite. All rights reserved.</p>
           <p style="font-size: 12px; color: #9ca3af;">You're receiving this email because you subscribed to our newsletter.</p>
         </div>
       </body>
