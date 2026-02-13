@@ -10,8 +10,8 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/subscribe': {
-        target: 'http://localhost:3001/api',
+      '/api': {
+        target: 'http://localhost:3001',
         changeOrigin: true
       }
     }
