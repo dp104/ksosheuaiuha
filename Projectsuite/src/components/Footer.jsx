@@ -108,9 +108,9 @@ const Footer = () => {
                     {/* Brand Section */}
                     <div className="space-y-4">
                         <Link to="/" className="flex items-center space-x-2 group w-fit">
-                            <img src={logo} alt="Projectssuite" className="h-8 w-auto" />
+                            <img src={logo} alt="ProjectsSuite" className="h-8 w-auto" />
                             <span className="text-xl font-bold font-heading text-gray-900 group-hover:text-blue-600 transition-colors">
-                                Projects<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">suite</span>
+                                Projects<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Suite</span>
                             </span>
                         </Link>
                         <p className="text-gray-600 font-body leading-relaxed text-sm">
@@ -118,7 +118,7 @@ const Footer = () => {
                         </p>
                         <div className="flex space-x-3">
                             <SocialIcon icon={<Github className="w-5 h-5" />} href="#" color="hover:text-gray-900 hover:bg-gray-200" />
-                            <SocialIcon icon={<Linkedin className="w-5 h-5" />} href="#" color="hover:text-blue-700 hover:bg-blue-50" />
+                            <SocialIcon icon={<Linkedin className="w-5 h-5" />} href="https://www.linkedin.com/in/projectssuite/" color="hover:text-blue-700 hover:bg-blue-50" target="_blank" rel="noopener noreferrer" />
                             <SocialIcon icon={<Twitter className="w-5 h-5" />} href="#" color="hover:text-blue-400 hover:bg-blue-50" />
                         </div>
                     </div>
@@ -158,7 +158,7 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="pt-4 border-t border-gray-200/60 flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-gray-500 font-body">
                     <div>
-                        &copy; {new Date().getFullYear()} Projectssuite. All rights reserved.
+                        &copy; {new Date().getFullYear()} ProjectsSuite. All rights reserved.
                     </div>
                     <div className="flex items-center gap-1">
                         Made with <Heart className="w-4 h-4 text-red-500 fill-red-500 animate-pulse" /> in India
@@ -169,10 +169,11 @@ const Footer = () => {
     );
 };
 
-const SocialIcon = ({ icon, href, color }) => (
+const SocialIcon = ({ icon, href, color, ...props }) => (
     <a
         href={href}
         className={`w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-500 transition-all duration-300 hover:scale-110 hover:shadow-md ${color}`}
+        {...props}
     >
         {icon}
     </a>
